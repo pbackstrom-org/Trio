@@ -558,40 +558,29 @@ extension Treatments {
             }
         }
 
-        func addPumpInsulin() async {
-            guard amount > 0 else {
-                showModal(for: nil)
-                return
-            }
-
-            let maxAmount = Double(min(amount, maxBolus))
-
-            do {
-                let authenticated = try await unlockmanager.unlock()
-                if authenticated {
-                    // show loading animation
-                    await MainActor.run {
-                        self.isAwaitingDeterminationResult = true
-                    }
-                    await apsManager.enactBolus(amount: maxAmount, isSMB: false, callback: nil)
-                }
-            } catch {
-                debug(.bolusState, "Authentication error for pump bolus: \(error)")
-
-                await MainActor.run {
-                    self.isAwaitingDeterminationResult = false
-                    self.showDeterminationFailureAlert = true
-                    self.determinationFailureMessage = parseAuthenticationError(from: error)
-                }
-            }
-        }
-
+       // MARK: - PUMP INSULIN - modified pb to remove verification
+        
+            func addPumpInsulin() async {
+              guard amount > 0 else {
+                  showModal(for: nil)
+                  return
+              }
+        
+              let maxAmount = Double(min(amount, maxBolus))
+        
+              // show loading animation
+              await MainActor.run {
+                  self.isAwaitingDeterminationResult = true
+              }
+              await apsManager.enactBolus(amount: maxAmount, isSMB: false, callback: nil)  // ✅ Directly proceeds
+              }        
+        
         // MARK: - EXTERNAL INSULIN
-
-        func addExternalInsulin() async {
-            guard amount > 0 else {
-                showModal(for: nil)
-                return
+    
+            func addExternalInsulin() async {
+                guard amount > 0 else {
+                    showModal(for: nil)
+                    return
             }
 
             await MainActor.run {
