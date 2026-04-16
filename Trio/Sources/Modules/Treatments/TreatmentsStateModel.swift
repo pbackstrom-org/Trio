@@ -572,7 +572,6 @@ extension Treatments {
                     self.showDeterminationFailureAlert = true
                     self.determinationFailureMessage = parseAuthenticationError(from: error)
                 }
-            }
         }
 
         // MARK: - EXTERNAL INSULIN
