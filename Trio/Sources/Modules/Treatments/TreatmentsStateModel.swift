@@ -566,18 +566,7 @@ extension Treatments {
 
             let maxAmount = Double(min(amount, maxBolus))
 
-            do {
-                let authenticated = try await unlockmanager.unlock()
-                if authenticated {
-                    // show loading animation
-                    await MainActor.run {
-                        self.isAwaitingDeterminationResult = true
-                    }
-                    await apsManager.enactBolus(amount: maxAmount, isSMB: false, callback: nil)
-                }
-            } catch {
-                debug(.bolusState, "Authentication error for pump bolus: \(error)")
-
+            
                 await MainActor.run {
                     self.isAwaitingDeterminationResult = false
                     self.showDeterminationFailureAlert = true
