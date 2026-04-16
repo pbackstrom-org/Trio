@@ -460,6 +460,21 @@ extension Treatments {
                 }
             }
         }
+        
+    private func addPumpInsulin() async {
+              guard amount > 0 else {
+                  showModal(for: nil)
+                  return
+              }
+        
+              let maxAmount = Double(min(amount, maxBolus))
+        
+              // show loading animation
+              await MainActor.run {
+                  self.isAwaitingDeterminationResult = true
+              }
+              await apsManager.enactBolus(amount: maxAmount, isSMB: false, callback: nil) 
+          }
 
         // MARK: - Insulin
 
